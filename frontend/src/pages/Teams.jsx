@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./Teams.css"
 
 const teams = [
   {
@@ -274,56 +275,49 @@ const teams = [
 ];
 
 function Teams() {
-  const [selectedTeam, setSelectedTeam] = useState("Detroit Pistons");
-
-  const players = teams[selectedTeam];
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
   return (
-    <main className="teams-page">
-      <section className="teams-header">
-        <p className="tagline">Team Rosters</p>
-        <h1>Explore Players</h1>
-        <p>
-          Select a team to view its players. Hover over each player card to see
-          their stats.
-        </p>
+    <div className="teams-page">
+      <h1>NBA Teams</h1>
 
-        <select
-          className="team-select"
-          value={selectedTeam}
-          onChange={(e) => setSelectedTeam(e.target.value)}
-        >
-          {Object.keys(teams).map((team) => (
-            <option key={team} value={team}>
-              {team}
-            </option>
-          ))}
-        </select>
-      </section>
-
-      <section className="players-grid">
-        {players.map((player) => (
-          <div className="player-card" key={player.name}>
-            <div className="player-photo">
-              <span>#{player.number}</span>
-            </div>
-
-            <div className="player-info">
-              <h2>{player.name}</h2>
-              <p>{player.position}</p>
-            </div>
-
-            <div className="player-stats">
-              <h3>Stats</h3>
-              <p>PPG: {player.stats.ppg}</p>
-              <p>RPG: {player.stats.rpg}</p>
-              <p>APG: {player.stats.apg}</p>
-              <p>FG%: {player.stats.fg}</p>
-            </div>
-          </div>
+      <div className="teams-grid">
+        {teams.map((team) => (
+          <button
+            key={team.id}
+            className="team-card"
+            onClick={() => setSelectedTeam(team)}
+          >
+            <h2>{team.name}</h2>
+            <p>
+              {team.city}, {team.state}
+            </p>
+            <p>{team.abbreviation}</p>
+            <p>
+              Record: {team.wins}-{team.losses}
+            </p>
+          </button>
         ))}
-      </section>
-    </main>
+      </div>
+
+      {selectedTeam && (
+        <div className="team-details">
+          <h2>{selectedTeam.name} Players</h2>
+
+          <div className="players-grid">
+            {selectedTeam.players.map((player) => (
+              <div key={player.id} className="player-card">
+                <h3>{player.name}</h3>
+                <p>Position: {player.position}</p>
+                <p>Points: {player.points}</p>
+                <p>Rebounds: {player.rebounds}</p>
+                <p>Assists: {player.assists}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

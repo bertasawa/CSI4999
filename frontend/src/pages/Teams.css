@@ -1,0 +1,53 @@
+.teams-page {
+    padding: 30px;
+    text-align: center;
+  }
+  
+  .teams-page h1 {
+    margin-bottom: 25px;
+  }
+  
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  
+  .team-card {
+    padding: 20px;
+    border: none;
+    border-radius: 15px;
+    background-color: #f3f3f3;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .team-card:hover {
+    transform: scale(1.03);
+    background-color: #e8e8e8;
+  }
+  
+  .team-card h2 {
+    margin-bottom: 10px;
+  }
+  
+  .team-details {
+    margin-top: 40px;
+    padding: 25px;
+    border-radius: 15px;
+    background-color: #fafafa;
+  }
+  
+  .players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .player-card {
+    padding: 15px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  }
