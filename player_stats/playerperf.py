@@ -31,8 +31,20 @@ with open('Player Play By Play.csv', mode='r', newline='', encoding='utf-8') as 
         stats = [name,team,bpturnover,lbturnover,shootingfouls,shootfouldrawn,offensivefouldrawn,assistpoints,and1,fga_blocked]
         # player = {id:stats}
         
+        # if id in allplayers:
+        #     olddata = allplayers[id]
+        #     a=0
+        #     for item in stats:
+        #         b = stats[a]
+        #         c = olddata[a]
+        #         newdata = (b + c)/2
+        #         stats.insert(a, newdata)
+        #         a+=1
+
+        
         allplayers[id] = stats
-        if index == 6:
+
+        if index == 734:
             break
 
 print(allplayers)
