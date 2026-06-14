@@ -1,52 +1,48 @@
 import { Link } from "react-router-dom";
+import "./Home.css";
 
 function Home() {
   return (
-    <main className="home-page">
-      <section className="hero">
+    <div className="home-page">
+      <section className="hero-section">
+        <h1>Basketball Prediction System</h1>
+        <p>
+          Compare teams, view player stats, and predict which team has the
+          better chance to win.
+        </p>
 
-        {/* Left side: main homepage text */}
-        <div className="hero-text">
-          <p className="tagline">Basketball Prediction Web App</p>
+        <div className="home-buttons">
+          <Link to="/teams" className="home-btn">
+            View Teams
+          </Link>
 
-          <h1>Explore players. Compare teams. Predict matchups.</h1>
-
-          <p className="hero-description">
-            Select a team to view its roster, player photos, and stats.
-            Then compare two teams to predict who would win.
-          </p>
-
-          <div className="hero-buttons">
-            <Link to="/teams" className="primary-button">
-              Explore Teams
-            </Link>
-
-            <Link to="/predict" className="secondary-button">
-              Predict Matchup
-            </Link>
-          </div>
+          <Link to="/prediction" className="home-btn secondary">
+            Make Prediction
+          </Link>
         </div>
-
-        {/* Right side: preview card */}
-        <div className="preview-card">
-          <h2>Player Stat Preview</h2>
-
-          <div className="fake-player-card">
-            <div className="fake-player-image">
-              Player Photo
-            </div>
-
-            <div>
-              <h3>Player Name</h3>
-              <p>PPG: 24.5</p>
-              <p>RPG: 7.1</p>
-              <p>APG: 8.3</p>
-            </div>
-          </div>
-        </div>
-
       </section>
-    </main>
+
+      <section className="features-section">
+        <h2>What You Can Do</h2>
+
+        <div className="features-grid">
+          <div className="feature-card">
+            <h3>Browse NBA Teams</h3>
+            <p>View team records, locations, abbreviations, and players.</p>
+          </div>
+
+          <div className="feature-card">
+            <h3>Player Stats</h3>
+            <p>See player performance stats like points, rebounds, and assists.</p>
+          </div>
+
+          <div className="feature-card">
+            <h3>Game Predictions</h3>
+            <p>Use team and player data to predict a possible winner.</p>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
