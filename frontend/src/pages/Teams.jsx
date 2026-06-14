@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Teams.css"
 
 const teams = [
@@ -279,6 +280,9 @@ function Teams() {
 
   return (
     <div className="teams-page">
+      <Link to="/" className="home-link">
+        Home
+      </Link>
       <h1>NBA Teams</h1>
 
       <div className="teams-grid">
