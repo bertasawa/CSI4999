@@ -1,7 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 import pandas
 
-statsCSV = pandas.read_csv("PlayerStatistics.csv", index_col="personId", nrows=120, usecols=["personId", "win", "plusMinusPoints"])
+statsCSV = pandas.read_csv("../game-statistics/PlayerStatistics.csv", index_col="personId", nrows=120, usecols=["personId", "win", "plusMinusPoints"])
 
 print(statsCSV)
 
