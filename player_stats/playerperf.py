@@ -244,7 +244,7 @@ def fetch_nba_api_stats(api_seasons):
 
 def calculate_play_by_play_score(row):
     """
-    Calculates extra player impact using your Player Play By Play.csv file.
+    Calculates extra player impact using Player Play By Play.csv file.
     This is not the main score anymore.
     It is an extra adjustment added to the nba_api box-score score.
     """
@@ -279,7 +279,7 @@ def calculate_total_season_score(row, api_stats):
 
     Full season score =
     nba_api box-score score
-    + play-by-play score from your CSV
+    + play-by-play score from CSV
     """
     player_name = row.get("player", "")
     csv_season = row.get("season", "")
