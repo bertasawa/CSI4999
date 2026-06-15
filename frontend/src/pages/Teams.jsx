@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Teams.css";
-import teams from "./data/teams";
+import teams from "../data/teams";
 
 function Teams() {
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -40,20 +40,26 @@ function Teams() {
         Home
       </Link>
 
-      <h1>NBA Teams</h1>
+      <h1 className="teams-title">NBA Teams</h1>
+      <div className="title-line"></div>
 
       <div className="teams-grid">
         {teams.map((team) => (
           <button
-            key={team.id}
-            className="team-card"
-            onClick={() => handleTeamClick(team)}
-          >
+          key={team.id}
+          className="team-card"
+          onClick={() => handleTeamClick(team)}
+        >
+          <img
+            src={`/team-logos/${team.abbreviation}.png`}
+            alt={`${team.name} logo`}
+            className="team-logo-bg"
+          />
+        
+          <div className="team-card-overlay">
             <h2>{team.name}</h2>
-            <p>
-              {team.city}, {team.state}
-            </p>
-          </button>
+          </div>
+        </button>
         ))}
       </div>
 
