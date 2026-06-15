@@ -158,9 +158,9 @@ def calculate_confidence_level(seasons):
     """
     num_seasons = len(seasons)
 
-    if num_seasons >= 3:
+    if num_seasons >= 5:
         return "High"
-    elif num_seasons == 2:
+    elif num_seasons >= 3:
         return "Medium"
     else:
         return "Low"
