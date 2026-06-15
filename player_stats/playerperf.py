@@ -8,6 +8,21 @@
 
 import csv
 
+def predictionScore(player_id):
+    playerstats = allplayers[player_id]
+    total = 0
+    a = 2
+    for i in range(2, 9):
+        total += int(playerstats[i])
+    average = total//7
+    return average
+
+def findPlayer(choice):
+    for key, values in allplayers.items():
+        if choice in values:
+            return key
+    return None
+
 allplayers = {}
 
 with open('Player Play By Play.csv', mode='r', newline='', encoding='utf-8') as playerdata:
@@ -15,6 +30,8 @@ with open('Player Play By Play.csv', mode='r', newline='', encoding='utf-8') as 
     
     header = next(reader) #skips the top row of the csv file, which has all the column headers
     
+    x=0
+
     for index, row in enumerate(reader):
         name = row[2] #the player's name
         id = row[3] #assigned in the data set, used to differentiate between potential players with the same name
@@ -31,20 +48,28 @@ with open('Player Play By Play.csv', mode='r', newline='', encoding='utf-8') as 
         stats = [name,team,bpturnover,lbturnover,shootingfouls,shootfouldrawn,offensivefouldrawn,assistpoints,and1,fga_blocked]
         # player = {id:stats}
         
-        # if id in allplayers:
-        #     olddata = allplayers[id]
-        #     a=0
-        #     for item in stats:
-        #         b = stats[a]
-        #         c = olddata[a]
-        #         newdata = (b + c)/2
-        #         stats.insert(a, newdata)
-        #         a+=1
-
-        
+        if id in allplayers:
+            # print(stats)
+            # x+=1
+            # print(id)
+            olddata = allplayers[id]
+            newdata = []
+            a=2
+            while a<9:
+                x = int(olddata[a])
+                y = int(stats[a])
+                z = (x+y)//2
+                stats.insert(a, z)
+                a+=1
+            # print(stats)
+                
         allplayers[id] = stats
 
-        if index == 734:
+        if index == 734: #end of 2026 is 734
             break
 
 print(allplayers)
+choice = input("Please enter a player's name: ")
+playerID = findPlayer(choice)
+print(allplayers[playerID])
+print(f"{choice}'s prediction score is: {predictionScore(playerID)}")
