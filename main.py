@@ -6,18 +6,27 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+import numpy
 import pandas
 import matplotlib.pyplot as plt
 
-statsCSV = pandas.read_csv("../game-statistics/PlayerStatistics.csv", index_col="personId", nrows=120, usecols=["personId", "win", "plusMinusPoints"])
-statsMatrix = statsCSV.to_numpy()
-print(statsMatrix)
-trainMatrix = statsMatrix[31:120]
-predictMatrix = statsMatrix[:30]
+trainCSV = pandas.read_csv("../game-statistics/PlayerStatistics.csv", nrows=50000, usecols=["win", "numMinutes", "points", "assists", "reboundsTotal", "fieldGoalsAttempted", "fieldGoalsMade"])
+#print(trainCSV.head())
+
+predictCSV = pandas.read_csv("../bball-reference-datasets/Data/Player Per Game.csv", usecols=["player", "team", "season", "mp_per_game", "pts_per_game", "ast_per_game", "trb_per_game", "fga_per_game", "fg_per_game"])
+
+predictMatrix = predictCSV.query("team == 'DET'").query("season == 2026").to_numpy()[:,3:]
+
+trainMatrix = trainCSV.dropna().to_numpy()
+
+#print(trainMatrix)
+
+print(trainMatrix[:,0].shape)
+print(trainMatrix[:,1:].shape)
 
 clf = RandomForestClassifier(random_state=0)
-clf.fit(trainMatrix[:,1].reshape(-1,1),trainMatrix[:,0])
-print(clf.predict(predictMatrix.reshape(-1,1)))
+clf.fit(trainMatrix[:,1:],trainMatrix[:,0])
+print(clf.predict(predictMatrix))
 
 
 
