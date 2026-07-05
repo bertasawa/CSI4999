@@ -15,5 +15,16 @@ def player():
 
 	return Response(statsCSV.query("player == @name").head(1).to_json(), mimetype='text/json')
 
+@app.route('/team/')
+def team():
+	name = request.args.get('name')
+	teamCSV = pandas.read_csv("../bball-reference-datasets/Data/Player Per Game.csv", usecols=["player", "team", "season"])
+	res = teamCSV.query("team == @name").query("season == 2026")
+	print(res)
+	return Response(res.to_json(), mimetype='text/json')
+def predict():
+	name = request.args.get('name')
+
+
 if __name__ == '__main__':
     app.run(port=1234, threaded=True)
