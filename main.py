@@ -10,34 +10,22 @@ import numpy
 import pandas
 import matplotlib.pyplot as plt
 
-trainCSV = pandas.read_csv("../game-statistics/PlayerStatistics.csv", nrows=50000, usecols=["win", "numMinutes", "points", "assists", "reboundsTotal", "fieldGoalsAttempted", "fieldGoalsMade"])
-#print(trainCSV.head())
+def predictTeam(team):
+	trainCSV = pandas.read_csv("../game-statistics/PlayerStatistics.csv", nrows=50000, usecols=["win", "numMinutes", "points", "assists", "reboundsTotal", "fieldGoalsAttempted", "fieldGoalsMade"])
 
-predictCSV = pandas.read_csv("../bball-reference-datasets/Data/Player Per Game.csv", usecols=["player", "team", "season", "mp_per_game", "pts_per_game", "ast_per_game", "trb_per_game", "fga_per_game", "fg_per_game"])
+	predictCSV = pandas.read_csv("../bball-reference-datasets/Data/Player Per Game.csv", usecols=["player", "team", "season", "mp_per_game", "pts_per_game", "ast_per_game", "trb_per_game", "fga_per_game", "fg_per_game"])
 
-predictMatrix = predictCSV.query("team == 'DET'").query("season == 2026").to_numpy()[:,3:]
+	predictMatrix = predictCSV.query(f"team == '{team}'").query("season == 2026").to_numpy()[:,3:]
 
-trainMatrix = trainCSV.dropna().to_numpy()
+	trainMatrix = trainCSV.dropna().to_numpy()
 
-#print(trainMatrix)
+	clf = RandomForestClassifier(random_state=0)
+	clf.fit(trainMatrix[:,1:],trainMatrix[:,0])
+	predictionArray = clf.predict(predictMatrix)
+	res = 0
+	for i in predictionArray:
+		res += i
+	return (res/predictionArray.size)
 
-print(trainMatrix[:,0].shape)
-print(trainMatrix[:,1:].shape)
-
-clf = RandomForestClassifier(random_state=0)
-clf.fit(trainMatrix[:,1:],trainMatrix[:,0])
-print(clf.predict(predictMatrix))
-
-
-
-'''
-clf = RandomForestClassifier(random_state=0)
-transformMatrix = StandardScaler().fit(trainMatrix).transform(trainMatrix)
-print(transformMatrix)
-print(clf.predict(predictMatrix))
-transformDF = pandas.DataFrame(transformMatrix, columns=['win','plusMinusPoints'])
-print(transformDF)
-new_stats = transformDF.loc[:, ['win', 'plusMinusPoints']]
-plt.scatter(new_stats.plusMinusPoints, new_stats.win)
-plt.show()
-'''
+if __name__ == "__main__":
+	predictTeam('DET')
