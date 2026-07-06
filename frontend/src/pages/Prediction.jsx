@@ -1,43 +1,122 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { getPrediction } from "../api";
 import teams from "../data/teams";
 import "./Prediction.css";
 
 function Prediction() {
   const teamOptions = Array.isArray(teams)
-    ? teams.map((team) =>
-        typeof team === "string" ? team : team.name || team.teamName
-      )
-    : Object.keys(teams);
+    ? teams.map((team) => {
+        if (typeof team === "string") {
+          return {
+            name: team,
+            code: team,
+          };
+        }
+
+        return {
+          name: team.name || team.teamName,
+          code:
+            team.code ||
+            team.abbreviation ||
+            team.abbr ||
+            team.teamCode,
+        };
+      })
+    : Object.entries(teams).map(([code, team]) => {
+        if (typeof team === "string") {
+          return {
+            name: team,
+            code,
+          };
+        }
+
+        return {
+          name: team.name || team.teamName || code,
+          code:
+            team.code ||
+            team.abbreviation ||
+            team.abbr ||
+            team.teamCode ||
+            code,
+        };
+      });
 
   const [teamOne, setTeamOne] = useState("");
   const [teamTwo, setTeamTwo] = useState("");
   const [teamOneChance, setTeamOneChance] = useState(0);
   const [teamTwoChance, setTeamTwoChance] = useState(0);
   const [hasPredicted, setHasPredicted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handlePredict() {
+  const getTeamName = (teamCode) => {
+    const team = teamOptions.find((option) => option.code === teamCode);
+    return team?.name || teamCode;
+  };
+
+  const handlePredict = async () => {
     if (!teamOne || !teamTwo) {
-      alert("Please select both teams first.");
+      setError("Please select both teams first.");
+      setHasPredicted(false);
       return;
     }
 
     if (teamOne === teamTwo) {
-      alert("Please select two different teams.");
+      setError("Please select two different teams.");
+      setHasPredicted(false);
       return;
     }
 
-    // Backend is not ready yet, so keep these at 0 for now
-    setTeamOneChance(0);
-    setTeamTwoChance(0);
-    setHasPredicted(true);
-  }
+    try {
+      setLoading(true);
+      setError("");
+      setHasPredicted(false);
+
+      const result = await getPrediction(teamOne, teamTwo);
+
+      console.log("Prediction response:", result);
+
+      const winner = result[0];
+      const winnerProbability = Number(result[1]);
+
+      if (!Number.isFinite(winnerProbability)) {
+        throw new Error("The backend returned an invalid probability.");
+      }
+
+      const winnerChance =
+        Math.round(winnerProbability * 1000) / 10;
+
+      const loserChance =
+        Math.round((100 - winnerChance) * 10) / 10;
+
+      if (winner === teamOne) {
+        setTeamOneChance(winnerChance);
+        setTeamTwoChance(loserChance);
+      } else if (winner === teamTwo) {
+        setTeamOneChance(loserChance);
+        setTeamTwoChance(winnerChance);
+      } else {
+        throw new Error(
+          `The backend returned ${winner}, but you selected ${teamOne} and ${teamTwo}.`
+        );
+      }
+
+      setHasPredicted(true);
+    } catch (error) {
+      console.error("Prediction error:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="prediction-page">
       <Link to="/" className="home-link">
         Home
       </Link>
+
       <h1 className="prediction-title">Game Prediction</h1>
 
       <p className="prediction-subtitle">
@@ -50,13 +129,18 @@ function Prediction() {
 
           <select
             value={teamOne}
-            onChange={(e) => setTeamOne(e.target.value)}
+            onChange={(event) => {
+              setTeamOne(event.target.value);
+              setHasPredicted(false);
+              setError("");
+            }}
             className="team-select"
           >
             <option value="">Select a team</option>
+
             {teamOptions.map((team) => (
-              <option key={team} value={team}>
-                {team}
+              <option key={team.code} value={team.code}>
+                {team.name}
               </option>
             ))}
           </select>
@@ -70,31 +154,44 @@ function Prediction() {
 
           <select
             value={teamTwo}
-            onChange={(e) => setTeamTwo(e.target.value)}
+            onChange={(event) => {
+              setTeamTwo(event.target.value);
+              setHasPredicted(false);
+              setError("");
+            }}
             className="team-select"
           >
             <option value="">Select a team</option>
+
             {teamOptions.map((team) => (
-              <option key={team} value={team}>
-                {team}
+              <option key={team.code} value={team.code}>
+                {team.name}
               </option>
             ))}
           </select>
         </div>
 
-        <button className="predict-button" onClick={handlePredict}>
-          Predict Winner
+        <button
+          className="predict-button"
+          onClick={handlePredict}
+          disabled={loading}
+        >
+          {loading ? "Predicting..." : "Predict Winner"}
         </button>
+
+        {error && <p className="prediction-error">{error}</p>}
 
         <div className="prediction-result-card">
           <h2>Winning Percentage</h2>
 
           {!hasPredicted ? (
-            <p className="empty-prediction">Choose two teams and click predict.</p>
+            <p className="empty-prediction">
+              Choose two teams and click predict.
+            </p>
           ) : (
             <>
               <div className="percent-row">
-                <span>{teamOne}</span>
+                <span>{getTeamName(teamOne)}</span>
                 <strong>{teamOneChance}%</strong>
               </div>
 
@@ -103,7 +200,7 @@ function Prediction() {
               </div>
 
               <div className="percent-row">
-                <span>{teamTwo}</span>
+                <span>{getTeamName(teamTwo)}</span>
                 <strong>{teamTwoChance}%</strong>
               </div>
 
