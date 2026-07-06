@@ -21,8 +21,8 @@ def player():
 @app.route('/team/')
 def team():
 	name = request.args.get('name')
-	teamCSV = pandas.read_csv("../bball-reference-datasets/Data/Player Per Game.csv", usecols=["player", "team", "season"])
-	res = teamCSV.query("team == @name").query("season == 2026")
+	teamCSV = pandas.read_csv("../bball-reference-datasets/Data/Team Summaries.csv", usecols=["season", "abbreviation", "w","l"])
+	res = teamCSV.query("abbreviation == @name").query("season == 2026")
 	print(res)
 	return Response(res.to_json(), mimetype='text/json')
 
