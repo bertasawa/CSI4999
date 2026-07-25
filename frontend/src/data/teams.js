@@ -4,7 +4,7 @@ const teams = [
       "name": "Phoenix Suns",
       "city": "Phoenix",
       "state": "AZ",
-      "abbreviation": "PHX",
+      "abbreviation": "PHO",
       "wins": 0,
       "losses": 0,
       "players": [
